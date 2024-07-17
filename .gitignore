@@ -1,0 +1,5 @@
+.venv
+.idea
+output.txt
+code.py
+.env
