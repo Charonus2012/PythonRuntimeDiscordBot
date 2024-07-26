@@ -1,5 +1,5 @@
 .venv
 .idea
-output.txt
-code.py
 .env
+ran_code.py
+output_code.txt

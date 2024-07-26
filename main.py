@@ -4,11 +4,14 @@ import discord
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 
+
 def check(code) -> bool:
     for i in rest_commands:
         if code.count(i) > 0:
             return False
     return True
+
+
 def err_message(code):
     for i in rest_commands:
         if code.count(i) > 0:
@@ -19,6 +22,7 @@ def err_message(code):
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL = os.getenv("CHANNEL")
+
 
 async def send_message(message: str, channel: discord.TextChannel):
     await channel.send(message)
@@ -40,7 +44,7 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: Message) -> None:
-    username: str = str(message.author)
+    username: str = str(message.author)  # Can be used in future
     content: str = message.content
     channel = message.channel
     if message.author == client.user:
@@ -50,12 +54,15 @@ async def on_message(message: Message) -> None:
         code: str = "\n".join(content.split("```")[1].split("\n")[1:])
         if lang == "python":
             if check(code):
-                with open("code.py", "w") as f:
+                with open("ran_code.py", "w") as f:
                     f.write(code)
-                os.system("code.py > output.txt")
+                try:
+                    os.system("ran_code.py > output_code.txt")
+                except Exception as e:
+                    os.system(f"echo {e} > output_code.txt")
             else:
-                os.system(f"echo Your program cant use keyword {err_message(code)} > output.txt")
-            with open("output.txt", "r") as f:
+                os.system(f"echo Your program cant use keyword {err_message(code)} > output_code.txt")
+            with open("output_code.txt", "r") as f:
                 output: str = f.read()
             final_output: str = f"```\n{output}```"
             await send_message(final_output, channel)
